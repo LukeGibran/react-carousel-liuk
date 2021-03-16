@@ -1,37 +1,38 @@
-
 // Variables to be use
 @import 'variables';
 
+// Layouts
+@import './layouts/navbar';
+
 * {
-    padding: 0;
-    margin: 0;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    color: $black;
+  font-family: 'Poppins', sans-serif;
+  color: $black;
 }
-
 
 // Scrollbars
 
 /* width */
 ::-webkit-scrollbar {
-    width: 10px;
+  width: 10px;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-    background: $primary;
+  background: $primary;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-    background: $secondary;
+  background: $secondary;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-    background: darken($secondary, 10);
+  background: darken($secondary, 10);
 }
