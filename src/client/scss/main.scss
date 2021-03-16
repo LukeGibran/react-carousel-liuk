@@ -1,0 +1,37 @@
+
+// Variables to be use
+@import 'variables';
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: $black;
+}
+
+
+// Scrollbars
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: $primary;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: $secondary;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: darken($secondary, 10);
+}
