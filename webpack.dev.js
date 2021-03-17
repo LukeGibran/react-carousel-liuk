@@ -7,9 +7,6 @@ module.exports = merge(common, {
   devServer: {
     contentBase: './dist',
     historyApiFallback: true,
-    proxy: {
-      '/api': 'http://localhost:5001',
-    },
     open: true,
     compress: true,
     hot: true,

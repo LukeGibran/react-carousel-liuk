@@ -1,0 +1,60 @@
+.radio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  .switch {
+    position: relative;
+    display: block;
+    width: 60px;
+    height: 30px;
+    margin-bottom: 30px;
+  }
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    transition: 0.5s;
+    border: 3px solid $primary;
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+  }
+
+  .slider:before {
+    position: absolute;
+    content: '';
+    bottom: 14px;
+    top: 8px;
+    background-color: $tertiary;
+    transition: 0.5s;
+  }
+
+  .switch input {
+    display: none;
+  }
+
+  input:checked + .slider {
+    background-color: $primary;
+  }
+
+  input:checked + .slider:before {
+    transform: translate(37px, -3px) rotateZ(65deg);
+    background: $secondary;
+  }
+
+  .slider.round:before {
+    width: 37%;
+    height: 40%;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    transform: rotateZ(-65deg) translate(2px, -2px);
+  }
+
+  .slider.round {
+    border-radius: 35px;
+  }
+}
