@@ -1,0 +1,19 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0;
+
+  h1 {
+    font-size: 40px;
+    color: $primary;
+    span {
+      color: $secondary;
+    }
+  }
+
+  h3 {
+    color: $black;
+  }
+}
