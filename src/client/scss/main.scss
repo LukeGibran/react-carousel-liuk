@@ -4,6 +4,12 @@
 // Layouts
 @import './layouts/navbar';
 
+// Widgets
+@import './widgets/radiobtn';
+
+// Components
+@import './components/carousel.scss';
+
 * {
   padding: 0;
   margin: 0;
