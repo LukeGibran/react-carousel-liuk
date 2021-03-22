@@ -3,7 +3,7 @@ import './scss/main.scss';
 
 import Navbar from './layouts/Navbar';
 
-import Carousel from './components/Carousel';
+import Carousel from './components/Carousel.component';
 
 import Header from './layouts/Header';
 

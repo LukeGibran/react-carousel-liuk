@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import Radio from '../widgets/RadioBtn';
 
-export class Carousel extends Component {
+import Radio from '../widgets/RadioBtn';
+import SelectBox from '../widgets/SelectBox';
+
+export class CarouselComponent extends Component {
   constructor() {
     super();
     this.state = {
@@ -37,10 +39,14 @@ export class Carousel extends Component {
             isChecked={isMultiple}
             initialValue={multiple}
           />
+          <SelectBox
+            text='Content'
+            options={['option 1', 'option 2', 'option 4']}
+          />
         </div>
       </section>
     );
   }
 }
 
-export default Carousel;
+export default CarouselComponent;

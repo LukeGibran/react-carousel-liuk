@@ -1,0 +1,10 @@
+{
+    "compilerOptions":{
+        "baseUrl": "./src/client",
+        "paths": {
+            "@components": ["components/*"],
+            "@layouts": ["layouts/*"],
+            "@widgets": ["widgets/*"]
+        }
+    }
+}

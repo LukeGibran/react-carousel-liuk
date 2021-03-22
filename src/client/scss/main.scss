@@ -7,9 +7,10 @@
 
 // Widgets
 @import './widgets/radiobtn';
+@import './widgets/selectbox';
 
 // Components
-@import './components/carousel.scss';
+@import './components/carousel.component.scss';
 
 * {
   padding: 0;
