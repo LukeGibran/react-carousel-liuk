@@ -3,12 +3,15 @@ import React, { Component } from 'react';
 import Radio from '../widgets/RadioBtn';
 import SelectBox from '../widgets/SelectBox';
 
+import { CONTENT } from '../_data/data';
+
 export class CarouselComponent extends Component {
   constructor() {
     super();
     this.state = {
       infinite: false,
       multiple: false,
+      contentCurrenValue: CONTENT[0],
     };
   }
 
@@ -20,10 +23,15 @@ export class CarouselComponent extends Component {
     this.setState({ ...this.state, multiple: value });
   };
 
+  setContentCurrentValue = (value) => {
+    this.setState({ ...this.state, contentCurrenValue: value });
+  };
+
   render() {
     const {
       isInfinite,
       isMultiple,
+      setContentCurrentValue,
       state: { infinite, multiple },
     } = this;
     return (
@@ -41,7 +49,8 @@ export class CarouselComponent extends Component {
           />
           <SelectBox
             text='Content'
-            options={['option 1', 'option 2', 'option 4']}
+            options={CONTENT}
+            reCurrentValue={setContentCurrentValue}
           />
         </div>
       </section>

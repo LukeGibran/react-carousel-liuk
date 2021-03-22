@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import CarretUp from '../assets/img/carretUp.svg';
 
-const SelectBox = ({ text, options }) => {
+const SelectBox = ({ text, options, reCurrentValue }) => {
   const [isShow, setIsShow] = useState(false);
   const [currentValue, setCurrentValue] = useState(options[0]);
 
@@ -12,6 +12,7 @@ const SelectBox = ({ text, options }) => {
 
   const setCurrent = ({ target }) => {
     setCurrentValue(target.innerText);
+    reCurrentValue(target.innerText);
   };
   return (
     <div className='selectBox'>
