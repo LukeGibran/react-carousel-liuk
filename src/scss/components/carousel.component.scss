@@ -4,7 +4,7 @@ section.carousel {
     justify-content: center;
     align-items: center;
 
-    & > * {
+    & > *:not(.option)  {
       margin-right: 30px;
     }
   }
