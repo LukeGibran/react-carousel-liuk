@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import CarretUp from '../assets/img/carretUp.svg';
+import CarretUp from '../assets/img/carret.svg';
 
 const SelectBox = ({ text, options, reCurrentValue }) => {
   const [isShow, setIsShow] = useState(false);
