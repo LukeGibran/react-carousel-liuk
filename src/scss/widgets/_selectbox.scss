@@ -5,67 +5,67 @@
   justify-content: center;
   height: 85px;
 
-.select {
-  position: relative;
-  padding: 6px 14px;
-  border: 3px solid $primary;
-  border-radius: 5px;
-  color: $primary;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+  .select {
+    position: relative;
+    padding: 6px 14px;
+    border: 3px solid $primary;
+    border-radius: 5px;
+    color: $primary;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
 
-  &:hover{
-    color: $secondary;
-    background-color: $primary;
-  }
+    &:hover {
+      color: $secondary;
+      background-color: $primary;
+    }
 
-  .current-option{
-    padding-right: 5px;
-  }
+    .current-option {
+      padding-right: 5px;
+    }
 
-  img.select-image{
-    color: $white;
-    transition: 0.5s ease;
-    &.show{
-      transform: rotate(180deg);
+    img.select-image {
+      color: $white;
+      transition: 0.5s ease;
+      &.show {
+        transform: rotate(180deg);
+      }
+    }
+
+    .options {
+      position: absolute;
+      content: '';
+      top: 110%;
+      left: 0;
+      max-height: 0;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      color: $white;
+      background-color: $primary;
+      text-align: center;
+      transition: 0.5s ease;
+      overflow: hidden;
+      z-index: 10;
+      .option {
+        width: inherit;
+        cursor: pointer;
+        padding: 6px 0;
+        border-bottom: 3px solid $white;
+
+        &:nth-child(1) {
+          border-top: 3px solid $white;
+        }
+
+        &:hover {
+          background-color: $secondary;
+        }
+      }
+
+      &.show {
+        max-height: 300px;
+      }
     }
   }
-
-  .options {
-   position: absolute; 
-   content: '';
-   top: 110%;
-   left: 0;
-   max-height: 0;
-   display: flex;
-   flex-direction: column;
-   width: 100%;
-   color: $white;
-   background-color: $primary;
-   text-align: center;
-   transition: .5s ease;
-   overflow: hidden;
-   .option{
-     width: inherit;
-     cursor: pointer;
-     padding: 6px 0;
-     border-bottom: 3px solid $white;
-
-     &:nth-child(1){
-       border-top: 3px solid $white;
-     }
-
-     &:hover{
-       background-color: $secondary;
-     }
-   }
-
-   &.show{
-     max-height: 300px;
-   }
-  }
-}  
-
 }
