@@ -26,8 +26,6 @@ class index extends Component {
       index: 0,
       allowShift: true,
       buttonClick: 0,
-      prevEnd: false,
-      nextEnd: false,
     };
   }
 
@@ -111,32 +109,33 @@ class index extends Component {
   shiftSlide(dir, action) {
     const {
       sliderItems,
-      state: { allowShift, posInitial, slideSize, index },
+      state: { index, allowShift },
     } = this;
 
     sliderItems.current.classList.add('shifting');
 
     let indexNew;
-    if (allowShift) {
-      if (!action) {
-        this.setState({ posInitial: sliderItems.current.offsetLeft });
-        // posInitial = sliderItems.current.offsetLeft;
-      }
-
-      if (dir == 1) {
-        // sliderItems.current.style.left = posInitial - slideSize + 'px';
-
-        indexNew = index + 1;
-        this.setState({ index: indexNew, buttonClick: 1 });
-        // index++;
-      } else if (dir == -1) {
-        // sliderItems.current.style.left = posInitial + slideSize + 'px';
-        indexNew = index - 1;
-        this.setState({ index: indexNew, buttonClick: -1 });
-        // index--;
-      }
+    if (!action) {
+      this.setState({ posInitial: sliderItems.current.offsetLeft });
+      // posInitial = sliderItems.current.offsetLeft;
     }
 
+    if (dir == 1) {
+      // sliderItems.current.style.left = posInitial - slideSize + 'px';
+
+      indexNew = index + 1;
+
+      this.setState({ index: indexNew, buttonClick: 1 });
+      // index++;
+    } else if (dir == -1) {
+      // sliderItems.current.style.left = posInitial + slideSize + 'px';
+      indexNew = index - 1;
+
+      this.setState({ index: indexNew, buttonClick: -1 });
+      // index--;
+    }
+
+    console.log({ shiftslide: allowShift });
     this.setState({ allowShift: false });
     // allowShift = false;
   }
@@ -149,11 +148,13 @@ class index extends Component {
     sliderItems.current.classList.remove('shifting');
 
     if (index == -1) {
-      this.setState({ prevEnd: true });
+      sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
+      this.setState({ index: slidesLength - 1 });
     }
 
     if (index == slidesLength) {
-      this.setState({ nextEnd: true });
+      sliderItems.current.style.left = -(1 * slideSize) + 'px';
+      this.setState({ index: 0 });
     }
 
     this.setState({ allowShift: true });
@@ -167,34 +168,21 @@ class index extends Component {
   componentDidUpdate(prevProps, prevState) {
     const {
       sliderItems,
-      state: {
-        posInitial,
-        slideSize,
-        index,
-        buttonClick,
-        slidesLength,
-        prevEnd,
-        nextEnd,
-      },
+      state: { posInitial, slideSize, buttonClick, allowShift },
     } = this;
 
-    console.log(index);
-    if (buttonClick > 0)
-      sliderItems.current.style.left = posInitial - slideSize + 'px';
-    if (buttonClick < 0)
-      sliderItems.current.style.left = posInitial + slideSize + 'px';
-
-    if (prevEnd) {
-      sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
-      this.setState({ index: slidesLength - 1, prevEnd: false });
-      console.log(sliderItems.current.style.left);
+    if (!allowShift) {
+      if (buttonClick > 0) {
+        sliderItems.current.style.left = posInitial - slideSize + 'px';
+        console.log('next');
+      }
+      if (buttonClick < 0) {
+        sliderItems.current.style.left = posInitial + slideSize + 'px';
+        console.log('prev');
+      }
     }
 
-    if (nextEnd) {
-      sliderItems.current.style.left = -(1 * slideSize) + 'px';
-      this.setState({ index: 0, nextEnd: false });
-      console.log(sliderItems.current.style.left);
-    }
+    console.log({ compoenentUpdate: allowShift });
   }
   render() {
     const { dragStart, dragAction, dragEnd, shiftSlide, checkIndex } = this;
