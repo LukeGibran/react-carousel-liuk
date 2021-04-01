@@ -127,7 +127,7 @@ class index extends Component {
       sliderItems.current.classList.remove('shifting');
 
       if (index == -1) {
-        sliderItems.current.left = -(slidesLength * slideSize) + 'px';
+        sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
         index = slidesLength - 1;
       }
 
