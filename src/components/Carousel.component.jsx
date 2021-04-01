@@ -58,7 +58,7 @@ export class CarouselComponent extends Component {
           </div>
         </section>
         <section className='main-carousel'>
-          <Slider />
+          <Slider infinite={infinite} />
         </section>
       </>
     );

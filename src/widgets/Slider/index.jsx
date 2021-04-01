@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import Slide from './Slide';
 
-import { SLIDE_DATA } from '../../_data/data';
+import { SLIDE_DATA, NEXT, PREV } from '../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -10,7 +10,8 @@ class index extends Component {
     this.slider = React.createRef();
     this.sliderItems = React.createRef();
 
-    this.slide = this.slide.bind(this);
+    this.initialize = this.initialize.bind(this);
+    this.cloneNodes = this.cloneNodes.bind(this);
     this.dragAction = this.dragAction.bind(this);
     this.dragStart = this.dragStart.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
@@ -25,48 +26,46 @@ class index extends Component {
       threshold: 100,
       index: 0,
       allowShift: true,
-      buttonClick: 0,
+      buttonClick: '',
     };
   }
 
-  slide() {
-    const { slider, sliderItems, next, prev, state } = this;
-    var slides = sliderItems.current.children,
+  initialize() {
+    const { slider, sliderItems } = this;
+    let slides = sliderItems.current.children,
       slidesLength = slides.length,
       slideSize = sliderItems.current.children[0].offsetWidth,
       firstSlide = slides[0],
-      lastSlide = slides[slidesLength - 1],
-      cloneFirst = firstSlide.cloneNode(true),
-      cloneLast = lastSlide.cloneNode(true);
+      lastSlide = slides[slidesLength - 1];
 
     this.setState({ slidesLength, slideSize });
 
     // Clone the first slide and last and attached them in the opposite direction
-    sliderItems.current.appendChild(cloneFirst);
-    sliderItems.current.insertBefore(cloneLast, firstSlide);
+    this.cloneNodes(firstSlide, lastSlide);
 
     // Add the loaded class to determine if the slides have been rendered
     slider.current.classList.add('loaded');
 
+    // Set Initial Position
+    this.setState({ posInitial: sliderItems.current.offsetLeft });
     // Mouse Events
-    sliderItems.current.onmousedown = this.dragStart;
-
-    // Touch Events
-    // sliderItems.current.addEventListener('touchstart', dragStart);
-    // sliderItems.current.addEventListener('touchend', dragEnd);
-    // sliderItems.current.addEventListener('touchmove', dragAction);
-
-    // // Transition Events
-    // sliderItems.current.addEventListener('transitionend', checkIndex);
+    // sliderItems.current.onmousedown = this.dragStart;
   }
+
+  cloneNodes(firstSlide, lastSlide) {
+    const { sliderItems } = this;
+    let cloneFirst = firstSlide.cloneNode(true),
+      cloneLast = lastSlide.cloneNode(true);
+
+    sliderItems.current.appendChild(cloneFirst);
+    sliderItems.current.insertBefore(cloneLast, firstSlide);
+  }
+
   dragStart(e) {
     e = e || window.event;
     e.preventDefault();
 
     const { dragEnd, dragAction, sliderItems } = this;
-
-    this.setState({ posInitial: sliderItems.current.offsetLeft });
-    // posInitial = sliderItems.current.offsetLeft;
 
     if (e.type == 'touchstart') {
       posX1 = e.touches[0].clientX;
@@ -109,83 +108,83 @@ class index extends Component {
   shiftSlide(dir, action) {
     const {
       sliderItems,
-      state: { index, allowShift },
+      state: { index },
     } = this;
+    let indexNew;
 
     sliderItems.current.classList.add('shifting');
 
-    let indexNew;
     if (!action) {
       this.setState({ posInitial: sliderItems.current.offsetLeft });
-      // posInitial = sliderItems.current.offsetLeft;
     }
 
-    if (dir == 1) {
-      // sliderItems.current.style.left = posInitial - slideSize + 'px';
-
-      indexNew = index + 1;
-
-      this.setState({ index: indexNew, buttonClick: 1 });
-      // index++;
-    } else if (dir == -1) {
-      // sliderItems.current.style.left = posInitial + slideSize + 'px';
-      indexNew = index - 1;
-
-      this.setState({ index: indexNew, buttonClick: -1 });
-      // index--;
+    switch (dir) {
+      case NEXT:
+        indexNew = index + 1;
+        this.setState({ index: indexNew, buttonClick: NEXT });
+        break;
+      case PREV:
+        indexNew = index - 1;
+        this.setState({ index: indexNew, buttonClick: PREV });
+        break;
+      default:
+        return;
     }
 
-    console.log({ shiftslide: allowShift });
     this.setState({ allowShift: false });
-    // allowShift = false;
   }
 
   checkIndex() {
     const {
       sliderItems,
-      state: { slidesLength, slideSize, index },
+      state: { slidesLength, slideSize, index, allowShift },
+      props: { infinite },
     } = this;
     sliderItems.current.classList.remove('shifting');
 
-    if (index == -1) {
-      sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
-      this.setState({ index: slidesLength - 1 });
-    }
+    if (infinite) {
+      if (index == -1) {
+        sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
+        this.setState({ index: slidesLength - 1 });
+      }
 
-    if (index == slidesLength) {
-      sliderItems.current.style.left = -(1 * slideSize) + 'px';
-      this.setState({ index: 0 });
-    }
+      if (index == slidesLength) {
+        sliderItems.current.style.left = -(1 * slideSize) + 'px';
+        this.setState({ index: 0 });
+      }
 
-    this.setState({ allowShift: true });
-    // allowShift = true;
+      if (!allowShift) this.setState({ allowShift: true });
+    }
   }
 
   componentDidMount() {
-    this.slide();
+    this.initialize();
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     const {
       sliderItems,
       state: { posInitial, slideSize, buttonClick, allowShift },
     } = this;
 
     if (!allowShift) {
-      if (buttonClick > 0) {
+      if (buttonClick === NEXT) {
         sliderItems.current.style.left = posInitial - slideSize + 'px';
-        console.log('next');
-      }
-      if (buttonClick < 0) {
+      } else if (buttonClick === PREV) {
         sliderItems.current.style.left = posInitial + slideSize + 'px';
-        console.log('prev');
       }
     }
-
-    console.log({ compoenentUpdate: allowShift });
   }
   render() {
-    const { dragStart, dragAction, dragEnd, shiftSlide, checkIndex } = this;
+    const {
+      dragStart,
+      dragAction,
+      dragEnd,
+      shiftSlide,
+      checkIndex,
+      state: { index, slidesLength },
+      props: { infinite },
+    } = this;
     return (
       <div id='slider' className='slider' ref={this.slider}>
         <div className='wrapper'>
@@ -198,27 +197,32 @@ class index extends Component {
             >
               {SLIDE_DATA.map((data, i) => (
                 <Slide
-                  onTouchStart={dragStart}
-                  onTouchEnd={dragEnd}
-                  onTouchMove={dragAction}
+                  // onTouchStart={dragStart}
+                  // onTouchEnd={dragEnd}
+                  // onTouchMove={dragAction}
                   key={i}
                   {...data}
                 />
               ))}
             </div>
           </div>
-          <a
-            id='prev'
-            className='control prev'
-            ref={this.prev}
-            onClick={() => shiftSlide(-1)}
-          ></a>
-          <a
-            id='next'
-            className='control next'
-            ref={this.next}
-            onClick={() => shiftSlide(1)}
-          ></a>
+          {index === 0 && !infinite ? null : (
+            <a
+              id='prev'
+              className='control prev'
+              ref={this.prev}
+              onClick={() => shiftSlide(PREV)}
+            ></a>
+          )}
+
+          {index === slidesLength - 1 && !infinite ? null : (
+            <a
+              id='next'
+              className='control next'
+              ref={this.next}
+              onClick={() => shiftSlide(NEXT)}
+            ></a>
+          )}
         </div>
       </div>
     );
