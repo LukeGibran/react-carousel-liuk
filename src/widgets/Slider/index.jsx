@@ -21,8 +21,7 @@ class index extends Component {
     this.state = {
       posX1: 0,
       posX2: 0,
-      posInitial: null,
-      posFinal: null,
+      posInitial: 0,
       threshold: 100,
       index: 0,
       allowShift: true,
@@ -31,7 +30,7 @@ class index extends Component {
   }
 
   initialize() {
-    const { slider, sliderItems } = this;
+    const { slider, sliderItems, dragStart, dragEnd, dragAction } = this;
     let slides = sliderItems.current.children,
       slidesLength = slides.length,
       slideSize = sliderItems.current.children[0].offsetWidth,
@@ -46,10 +45,15 @@ class index extends Component {
     // Add the loaded class to determine if the slides have been rendered
     slider.current.classList.add('loaded');
 
+    // Touch Events
+    sliderItems.current.addEventListener('touchstart', dragStart);
+    sliderItems.current.addEventListener('touchend', dragEnd);
+    sliderItems.current.addEventListener('touchmove', dragAction);
+
     // Set Initial Position
     this.setState({ posInitial: sliderItems.current.offsetLeft });
     // Mouse Events
-    // sliderItems.current.onmousedown = this.dragStart;
+    sliderItems.current.onmousedown = this.dragStart;
   }
 
   cloneNodes(firstSlide, lastSlide) {
@@ -64,13 +68,16 @@ class index extends Component {
   dragStart(e) {
     e = e || window.event;
     e.preventDefault();
+    const { sliderItems } = this;
 
-    const { dragEnd, dragAction, sliderItems } = this;
+    this.setState({ posInitial: sliderItems.current.offsetLeft });
 
+    console.log(e.type);
+    const { dragEnd, dragAction } = this;
     if (e.type == 'touchstart') {
-      posX1 = e.touches[0].clientX;
+      this.setState({ posX1: e.touches[0].clientX });
     } else {
-      posX1 = e.clientX;
+      this.setState({ posX1: e.clientX });
       document.onmouseup = dragEnd;
       document.onmousemove = dragAction;
     }
@@ -79,24 +86,46 @@ class index extends Component {
   dragAction(e) {
     e = e || window.event;
 
+    const {
+      sliderItems,
+      state: { posX1, posX2, slideSize, slidesLength },
+      props: { infinite },
+    } = this;
     if (e.type == 'touchmove') {
-      posX2 = posX1 - e.touches[0].clientX;
-      posX1 = e.touches[0].clientX;
+      this.setState({
+        posX2: posX1 - e.touches[0].clientX,
+        posX1: e.touches[0].clientX,
+      });
     } else {
-      posX2 = posX1 - e.clientX;
-      posX1 = e.clientX;
+      this.setState({ posX2: posX1 - e.clientX, posX1: e.clientX });
     }
+
+    // Check if infinite is false then first and last slide must not be dragged to the left or right
+    if (parseInt(sliderItems.current.style.left) > -slideSize && !infinite)
+      return;
+    if (
+      parseInt(sliderItems.current.style.left) < -(slideSize * slidesLength) &&
+      !infinite
+    )
+      return;
 
     sliderItems.current.style.left =
       sliderItems.current.offsetLeft - posX2 + 'px';
   }
 
   dragEnd() {
-    posFinal = sliderItems.current.offsetLeft;
+    const {
+      sliderItems,
+      shiftSlide,
+      state: { posInitial, threshold, index },
+    } = this;
+
+    let posFinal = sliderItems.current.offsetLeft;
+
     if (posFinal - posInitial < -threshold) {
-      shiftSlide(1, 'drag');
+      shiftSlide(NEXT, 'drag');
     } else if (posFinal - posInitial > threshold) {
-      shiftSlide(-1, 'drag');
+      shiftSlide(PREV, 'drag');
     } else {
       sliderItems.current.style.left = posInitial + 'px';
     }
@@ -108,27 +137,28 @@ class index extends Component {
   shiftSlide(dir, action) {
     const {
       sliderItems,
-      state: { index },
+      state: { index, allowShift },
     } = this;
     let indexNew;
 
     sliderItems.current.classList.add('shifting');
+    if (allowShift) {
+      if (!action) {
+        this.setState({ posInitial: sliderItems.current.offsetLeft });
+      }
 
-    if (!action) {
-      this.setState({ posInitial: sliderItems.current.offsetLeft });
-    }
-
-    switch (dir) {
-      case NEXT:
-        indexNew = index + 1;
-        this.setState({ index: indexNew, buttonClick: NEXT });
-        break;
-      case PREV:
-        indexNew = index - 1;
-        this.setState({ index: indexNew, buttonClick: PREV });
-        break;
-      default:
-        return;
+      switch (dir) {
+        case NEXT:
+          indexNew = index + 1;
+          this.setState({ index: indexNew, buttonClick: NEXT });
+          break;
+        case PREV:
+          indexNew = index - 1;
+          this.setState({ index: indexNew, buttonClick: PREV });
+          break;
+        default:
+          return;
+      }
     }
 
     this.setState({ allowShift: false });
@@ -152,9 +182,8 @@ class index extends Component {
         sliderItems.current.style.left = -(1 * slideSize) + 'px';
         this.setState({ index: 0 });
       }
-
-      if (!allowShift) this.setState({ allowShift: true });
     }
+    if (!allowShift) this.setState({ allowShift: true });
   }
 
   componentDidMount() {
@@ -197,9 +226,9 @@ class index extends Component {
             >
               {SLIDE_DATA.map((data, i) => (
                 <Slide
-                  // onTouchStart={dragStart}
-                  // onTouchEnd={dragEnd}
-                  // onTouchMove={dragAction}
+                  onMouseDown={dragStart}
+                  onMouseUp={dragEnd}
+                  onMouseMove={dragAction}
                   key={i}
                   {...data}
                 />
