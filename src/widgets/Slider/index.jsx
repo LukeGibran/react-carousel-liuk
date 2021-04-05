@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 
 import Slide from './Slide';
+import SelectBtn from './SelectBtn';
 
-import { SLIDE_DATA, NEXT, PREV } from '../../_data/data';
+import { SLIDE_DATA, NEXT, PREV, GO_SLIDE } from '../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -12,11 +13,12 @@ class index extends Component {
 
     this.initialize = this.initialize.bind(this);
     this.cloneNodes = this.cloneNodes.bind(this);
-    this.dragAction = this.dragAction.bind(this);
+    this.dragMove = this.dragMove.bind(this);
     this.dragStart = this.dragStart.bind(this);
     this.dragEnd = this.dragEnd.bind(this);
     this.shiftSlide = this.shiftSlide.bind(this);
     this.checkIndex = this.checkIndex.bind(this);
+    this.selectSlide = this.selectSlide.bind(this);
 
     this.state = {
       posX1: 0,
@@ -26,11 +28,13 @@ class index extends Component {
       index: 0,
       allowShift: true,
       buttonClick: '',
+      selectedIndex: 0,
+      goSlide: '',
     };
   }
 
   initialize() {
-    const { slider, sliderItems, dragStart, dragEnd, dragAction } = this;
+    const { slider, sliderItems, dragStart, dragEnd, dragMove } = this;
     let slides = sliderItems.current.children,
       slidesLength = slides.length,
       slideSize = sliderItems.current.children[0].offsetWidth,
@@ -48,7 +52,7 @@ class index extends Component {
     // Touch Events
     sliderItems.current.addEventListener('touchstart', dragStart);
     sliderItems.current.addEventListener('touchend', dragEnd);
-    sliderItems.current.addEventListener('touchmove', dragAction);
+    sliderItems.current.addEventListener('touchmove', dragMove);
 
     // Set Initial Position
     this.setState({ posInitial: sliderItems.current.offsetLeft });
@@ -72,18 +76,18 @@ class index extends Component {
 
     this.setState({ posInitial: sliderItems.current.offsetLeft });
 
-    console.log(e.type);
-    const { dragEnd, dragAction } = this;
+    sliderItems.current.style.cursor = 'grabbing';
+    const { dragEnd, dragMove } = this;
     if (e.type == 'touchstart') {
       this.setState({ posX1: e.touches[0].clientX });
     } else {
       this.setState({ posX1: e.clientX });
       document.onmouseup = dragEnd;
-      document.onmousemove = dragAction;
+      document.onmousemove = dragMove;
     }
   }
 
-  dragAction(e) {
+  dragMove(e) {
     e = e || window.event;
 
     const {
@@ -91,6 +95,7 @@ class index extends Component {
       state: { posX1, posX2, slideSize, slidesLength },
       props: { infinite },
     } = this;
+
     if (e.type == 'touchmove') {
       this.setState({
         posX2: posX1 - e.touches[0].clientX,
@@ -101,13 +106,19 @@ class index extends Component {
     }
 
     // Check if infinite is false then first and last slide must not be dragged to the left or right
-    if (parseInt(sliderItems.current.style.left) > -slideSize && !infinite)
-      return;
     if (
-      parseInt(sliderItems.current.style.left) < -(slideSize * slidesLength) &&
+      parseInt(sliderItems.current.style.left) > -(slideSize - 1) &&
       !infinite
     )
       return;
+    if (
+      parseInt(sliderItems.current.style.left) <
+        -(slideSize * slidesLength + 1) &&
+      !infinite
+    ) {
+      // sliderItems.current.style.left = -(slideSize * slidesLength) + 'px';
+      return;
+    }
 
     sliderItems.current.style.left =
       sliderItems.current.offsetLeft - posX2 + 'px';
@@ -117,11 +128,12 @@ class index extends Component {
     const {
       sliderItems,
       shiftSlide,
-      state: { posInitial, threshold, index },
+      state: { posInitial, threshold },
     } = this;
 
     let posFinal = sliderItems.current.offsetLeft;
 
+    sliderItems.current.style.cursor = 'grab';
     if (posFinal - posInitial < -threshold) {
       shiftSlide(NEXT, 'drag');
     } else if (posFinal - posInitial > threshold) {
@@ -175,15 +187,22 @@ class index extends Component {
     if (infinite) {
       if (index == -1) {
         sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
-        this.setState({ index: slidesLength - 1 });
+        this.setState({
+          index: slidesLength - 1,
+          selectedIndex: slidesLength - 1,
+        });
       }
 
       if (index == slidesLength) {
         sliderItems.current.style.left = -(1 * slideSize) + 'px';
-        this.setState({ index: 0 });
+        this.setState({ index: 0, selectedIndex: 0 });
       }
     }
     if (!allowShift) this.setState({ allowShift: true });
+  }
+
+  selectSlide(index) {
+    this.setState({ index, selectedIndex: index, goSlide: GO_SLIDE });
   }
 
   componentDidMount() {
@@ -193,7 +212,14 @@ class index extends Component {
   componentDidUpdate() {
     const {
       sliderItems,
-      state: { posInitial, slideSize, buttonClick, allowShift },
+      state: {
+        posInitial,
+        slideSize,
+        buttonClick,
+        allowShift,
+        selectedIndex,
+        goSlide,
+      },
     } = this;
 
     if (!allowShift) {
@@ -203,16 +229,23 @@ class index extends Component {
         sliderItems.current.style.left = posInitial + slideSize + 'px';
       }
     }
+    if (goSlide === GO_SLIDE) {
+      sliderItems.current.style.left =
+        -((selectedIndex + 1) * slideSize) + 'px';
+
+      this.setState({ goSlide: '' });
+    }
   }
   render() {
     const {
       dragStart,
-      dragAction,
+      dragMove,
       dragEnd,
       shiftSlide,
       checkIndex,
+      selectSlide,
       state: { index, slidesLength },
-      props: { infinite },
+      props: { infinite, sliderButtons },
     } = this;
     return (
       <div id='slider' className='slider' ref={this.slider}>
@@ -228,7 +261,7 @@ class index extends Component {
                 <Slide
                   onMouseDown={dragStart}
                   onMouseUp={dragEnd}
-                  onMouseMove={dragAction}
+                  onMouseMove={dragMove}
                   key={i}
                   {...data}
                 />
@@ -251,6 +284,14 @@ class index extends Component {
               ref={this.next}
               onClick={() => shiftSlide(NEXT)}
             ></a>
+          )}
+
+          {sliderButtons && (
+            <SelectBtn
+              slidesLength={slidesLength}
+              selectSlide={selectSlide}
+              index={index}
+            />
           )}
         </div>
       </div>
