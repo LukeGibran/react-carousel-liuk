@@ -42,8 +42,8 @@
       display: flex;
       flex-direction: column;
       width: 100%;
-      color: $white;
-      background-color: $primary;
+      color: $black;
+      background-color: $secondary;
       text-align: center;
       transition: 0.5s ease;
       overflow: hidden;
@@ -59,7 +59,7 @@
         }
 
         &:hover {
-          background-color: $secondary;
+          background-color: $tertiary;
         }
       }
 

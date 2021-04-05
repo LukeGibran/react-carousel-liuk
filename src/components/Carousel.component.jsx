@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Radio from '../widgets/RadioBtn';
+import CheckBox from '../widgets/CheckBox';
 import SelectBox from '../widgets/SelectBox';
 
 import Slider from '../widgets/Slider';
@@ -14,41 +14,52 @@ export class CarouselComponent extends Component {
       infinite: false,
       multiple: false,
       contentCurrenValue: CONTENT[0],
+      sliderButtons: true,
     };
   }
 
-  isInfinite = (value) => {
-    this.setState({ ...this.state, infinite: value });
+  isInfinite = () => {
+    this.setState({ infinite: !this.state.infinite });
   };
 
-  isMultiple = (value) => {
-    this.setState({ ...this.state, multiple: value });
+  isMultiple = () => {
+    this.setState({ multiple: !this.state.multiple });
+  };
+
+  isSliderButtons = () => {
+    this.setState({ sliderButtons: !this.state.sliderButtons });
   };
 
   setContentCurrentValue = (value) => {
-    this.setState({ ...this.state, contentCurrenValue: value });
+    this.setState({ contentCurrenValue: value });
   };
 
   render() {
     const {
       isInfinite,
       isMultiple,
+      isSliderButtons,
       setContentCurrentValue,
-      state: { infinite, multiple },
+      state: { infinite, multiple, sliderButtons },
     } = this;
     return (
       <>
         <section className='carousel-options'>
           <div className='options'>
-            <Radio
+            <CheckBox
               text='Infinite'
               isChecked={isInfinite}
               initialValue={infinite}
             />
-            <Radio
+            <CheckBox
               text='Multiple'
               isChecked={isMultiple}
               initialValue={multiple}
+            />
+            <CheckBox
+              text='Slider Buttons'
+              isChecked={isSliderButtons}
+              initialValue={sliderButtons}
             />
             <SelectBox
               text='Content'
@@ -58,7 +69,7 @@ export class CarouselComponent extends Component {
           </div>
         </section>
         <section className='main-carousel'>
-          <Slider infinite={infinite} />
+          <Slider infinite={infinite} sliderButtons={sliderButtons} />
         </section>
       </>
     );
