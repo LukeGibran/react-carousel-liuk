@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
 import Slide from './Slide';
-import SelectBtn from './SelectBtn';
+import SelectBtn from '../SelectBtn';
 
-import { SLIDE_DATA, NEXT, PREV, GO_SLIDE, CONTENT } from '../../_data/data';
+import { SLIDE_DATA, NEXT, PREV, GO_SLIDE } from '../../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -223,7 +223,6 @@ class index extends Component {
   componentDidUpdate() {
     const {
       sliderItems,
-      cloneNodes,
       state: {
         slideSize,
         buttonClick,
@@ -232,8 +231,6 @@ class index extends Component {
         goSlide,
         index,
       },
-
-      props: { contentValue },
     } = this;
 
     if (!allowShift) {
