@@ -7,7 +7,7 @@ const SelectBtn = ({ selectSlide, slidesLength, index }) => {
     items.push(
       <li
         key={x}
-        className={`selectItem ${index === x && 'selected'}`}
+        className={`selectItem ${index === x ? 'selected' : ''}`}
         onClick={() => selectSlide(x)}
       ></li>
     );

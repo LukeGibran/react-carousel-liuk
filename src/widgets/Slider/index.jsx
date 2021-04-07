@@ -30,6 +30,7 @@ class index extends Component {
       buttonClick: '',
       selectedIndex: 0,
       goSlide: '',
+      dragging: false,
     };
   }
 
@@ -74,7 +75,10 @@ class index extends Component {
     e.preventDefault();
     const { sliderItems } = this;
 
-    this.setState({ posInitial: sliderItems.current.offsetLeft });
+    this.setState({
+      posInitial: sliderItems.current.offsetLeft,
+      dragging: true,
+    });
 
     sliderItems.current.style.cursor = 'grabbing';
     const { dragEnd, dragMove } = this;
@@ -92,36 +96,39 @@ class index extends Component {
 
     const {
       sliderItems,
-      state: { posX1, posX2, slideSize, slidesLength },
+      state: { posX1, posX2, slideSize, slidesLength, dragging },
       props: { infinite },
     } = this;
 
-    if (e.type == 'touchmove') {
-      this.setState({
-        posX2: posX1 - e.touches[0].clientX,
-        posX1: e.touches[0].clientX,
-      });
-    } else {
-      this.setState({ posX2: posX1 - e.clientX, posX1: e.clientX });
-    }
+    if (dragging) {
+      if (e.type == 'touchmove') {
+        this.setState({
+          posX2: posX1 - e.touches[0].clientX,
+          posX1: e.touches[0].clientX,
+        });
+      } else {
+        this.setState({ posX2: posX1 - e.clientX, posX1: e.clientX });
+      }
 
-    // Check if infinite is false then first and last slide must not be dragged to the left or right
-    if (
-      parseInt(sliderItems.current.style.left) > -(slideSize - 1) &&
-      !infinite
-    )
-      return;
-    if (
-      parseInt(sliderItems.current.style.left) <
-        -(slideSize * slidesLength + 1) &&
-      !infinite
-    ) {
-      // sliderItems.current.style.left = -(slideSize * slidesLength) + 'px';
-      return;
-    }
+      // Check if infinite is false then first and last slide must not be dragged to the left or right
+      if (
+        parseInt(sliderItems.current.style.left) > -(slideSize - 1) &&
+        !infinite
+      ) {
+        sliderItems.current.style.left = -slideSize + 'px';
+        return;
+      }
+      if (
+        parseInt(sliderItems.current.style.left) <
+          -(slideSize * slidesLength + 1) &&
+        !infinite
+      ) {
+        return;
+      }
 
-    sliderItems.current.style.left =
-      sliderItems.current.offsetLeft - posX2 + 'px';
+      sliderItems.current.style.left =
+        sliderItems.current.offsetLeft - posX2 + 'px';
+    }
   }
 
   dragEnd() {
@@ -142,6 +149,7 @@ class index extends Component {
       sliderItems.current.style.left = posInitial + 'px';
     }
 
+    this.setState({ dragging: false });
     document.onmouseup = null;
     document.onmousemove = null;
   }
@@ -216,20 +224,20 @@ class index extends Component {
     const {
       sliderItems,
       state: {
-        posInitial,
         slideSize,
         buttonClick,
         allowShift,
         selectedIndex,
         goSlide,
+        index,
       },
     } = this;
 
     if (!allowShift) {
       if (buttonClick === NEXT) {
-        sliderItems.current.style.left = posInitial - slideSize + 'px';
+        sliderItems.current.style.left = -((index + 1) * slideSize) + 'px';
       } else if (buttonClick === PREV) {
-        sliderItems.current.style.left = posInitial + slideSize + 'px';
+        sliderItems.current.style.left = -((index + 1) * slideSize) + 'px';
       }
     }
     if (goSlide === GO_SLIDE) {
