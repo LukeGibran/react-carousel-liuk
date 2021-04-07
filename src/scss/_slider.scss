@@ -93,13 +93,21 @@
     .selectItem {
       width: 12px;
       height: 12px;
-      border: 2px solid $secondary;
+      border: 2px solid $white;
       border-radius: 50px;
       margin: 5px 8px;
       cursor: pointer;
 
       &.selected {
         background-color: $white;
+      }
+    }
+  }
+  &.loaded {
+    .slides {
+      .slide:nth-child(odd) {
+        background-color: $tertiary;
+        color: $primary;
       }
     }
   }
