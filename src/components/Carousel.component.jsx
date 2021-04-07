@@ -40,7 +40,7 @@ export class CarouselComponent extends Component {
       isMultiple,
       isSliderButtons,
       setContentCurrentValue,
-      state: { infinite, multiple, sliderButtons },
+      state: { infinite, multiple, sliderButtons, contentCurrenValue },
     } = this;
     return (
       <>
@@ -69,7 +69,11 @@ export class CarouselComponent extends Component {
           </div>
         </section>
         <section className='main-carousel'>
-          <Slider infinite={infinite} sliderButtons={sliderButtons} />
+          <Slider
+            infinite={infinite}
+            sliderButtons={sliderButtons}
+            contentValue={contentCurrenValue}
+          />
         </section>
       </>
     );

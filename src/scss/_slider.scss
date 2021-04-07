@@ -29,6 +29,11 @@
           background: $primary;
           color: $secondary;
           border-radius: 2px;
+
+          .title,
+          .content {
+            z-index: 10;
+          }
         }
       }
       .slides.shifting {
