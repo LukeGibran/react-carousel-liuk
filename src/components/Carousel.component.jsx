@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import CheckBox from '../widgets/CheckBox';
 import SelectBox from '../widgets/SelectBox';
 
-import Slider from '../widgets/Slider';
+import SingleSlide from '../widgets/Slider/SingleSlide';
+import MultipleSlide from '../widgets/Slider/MultipleSlide';
 
 import { CONTENT } from '../_data/data';
 
@@ -13,7 +14,7 @@ export class CarouselComponent extends Component {
     this.state = {
       infinite: false,
       multiple: false,
-      contentCurrenValue: CONTENT[0],
+      contentCurrentValue: CONTENT[0],
       sliderButtons: true,
     };
   }
@@ -31,7 +32,7 @@ export class CarouselComponent extends Component {
   };
 
   setContentCurrentValue = (value) => {
-    this.setState({ contentCurrenValue: value });
+    this.setState({ contentCurrentValue: value });
   };
 
   render() {
@@ -40,7 +41,7 @@ export class CarouselComponent extends Component {
       isMultiple,
       isSliderButtons,
       setContentCurrentValue,
-      state: { infinite, multiple, sliderButtons, contentCurrenValue },
+      state: { infinite, sliderButtons, contentCurrentValue, multiple },
     } = this;
     return (
       <>
@@ -69,11 +70,20 @@ export class CarouselComponent extends Component {
           </div>
         </section>
         <section className='main-carousel'>
-          <Slider
-            infinite={infinite}
-            sliderButtons={sliderButtons}
-            contentValue={contentCurrenValue}
-          />
+          {multiple ? (
+            <MultipleSlide
+              infinite={infinite}
+              sliderButtons={sliderButtons}
+              contentValue={contentCurrentValue}
+              multiple={multiple}
+            />
+          ) : (
+            <SingleSlide
+              infinite={infinite}
+              sliderButtons={sliderButtons}
+              contentValue={contentCurrentValue}
+            />
+          )}
         </section>
       </>
     );

@@ -55,7 +55,7 @@ export const SLIDE_DATA = [
   },
   {
     title: 'Slide 10',
-    content: 'This is Slide Ten',
+    content: 'This is Slide Nine',
     image: 'https://unsplash.it/805/500',
   },
 ];

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { CONTENT } from '../../_data/data';
+import { CONTENT } from '../../../_data/data';
 
 const Slide = ({ title, content, image, contentValue }) => {
   const trimContentValue = (value) => value.split(' ').join('-');
