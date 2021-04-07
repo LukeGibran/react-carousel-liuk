@@ -202,6 +202,9 @@ class index extends Component {
   }
 
   selectSlide(index) {
+    const { sliderItems } = this;
+
+    sliderItems.current.classList.add('shifting');
     this.setState({ index, selectedIndex: index, goSlide: GO_SLIDE });
   }
 
