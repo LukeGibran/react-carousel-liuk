@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import MultipleSlide from './MultipleSlide';
 import SelectBtn from '../SelectBtn';
@@ -77,7 +78,10 @@ class index extends Component {
     // Mouse Events
     sliderItems.current.onmousedown = this.dragStart;
 
+    // Set initial value for newslidesize to be use as comparison value
     this.setState({ newSlideSize: slideSize });
+
+    // Set an event listener to the window object to adjust the width and slidesize depend on the viewport
     window.addEventListener('resize', handleResize);
   }
   handleResize() {
@@ -197,6 +201,7 @@ class index extends Component {
           -(slideSize * slidesLength + 1) &&
         !infinite
       ) {
+        sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
         return;
       }
 
@@ -266,6 +271,7 @@ class index extends Component {
     } = this;
     sliderItems.current.classList.remove('shifting');
 
+    // This block of code will be responsible for the smooth infinite slide feature
     if (infinite) {
       if (index == -1) {
         sliderItems.current.style.left = -(slidesLength * slideSize) + 'px';
@@ -308,6 +314,7 @@ class index extends Component {
       },
     } = this;
 
+    // if slide has been drag/clicked the next/prev buttons
     if (!allowShift) {
       if (buttonClick === NEXT) {
         sliderItems.current.style.left = -((index + 1) * slideSize) + 'px';
@@ -315,6 +322,8 @@ class index extends Component {
         sliderItems.current.style.left = -((index + 1) * slideSize) + 'px';
       }
     }
+
+    // If Slide has been clicked through the select index buttons
     if (goSlide === GO_SLIDE) {
       sliderItems.current.style.left =
         -((selectedIndex + 1) * slideSize) + 'px';
@@ -322,6 +331,7 @@ class index extends Component {
       this.setState({ goSlide: '' });
     }
 
+    // This will detect if windows has resize and will set the corresponding values
     if (newSlideSize !== slideSize) {
       const width = Math.max(
         document.documentElement.clientWidth || 0,
@@ -432,5 +442,11 @@ class index extends Component {
     );
   }
 }
+
+index.propTypes = {
+  contentValue: PropTypes.string.isRequired,
+  infinite: PropTypes.bool.isRequired,
+  sliderButtons: PropTypes.bool,
+};
 
 export default index;
