@@ -3,7 +3,16 @@ import React, { Component } from 'react';
 import Slide from './Slide';
 import SelectBtn from '../SelectBtn';
 
-import { SLIDE_DATA, NEXT, PREV, GO_SLIDE } from '../../../_data/data';
+import {
+  SLIDE_DATA,
+  NEXT,
+  PREV,
+  GO_SLIDE,
+  LG,
+  MD,
+  SM,
+  XSM,
+} from '../../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -19,6 +28,7 @@ class index extends Component {
     this.shiftSlide = this.shiftSlide.bind(this);
     this.checkIndex = this.checkIndex.bind(this);
     this.selectSlide = this.selectSlide.bind(this);
+    this.handleResize = this.handleResize.bind(this);
 
     this.state = {
       posX1: 0,
@@ -31,6 +41,7 @@ class index extends Component {
       selectedIndex: 0,
       goSlide: '',
       dragging: false,
+      newSlideSize: 0,
     };
   }
 
@@ -59,6 +70,9 @@ class index extends Component {
     this.setState({ posInitial: sliderItems.current.offsetLeft });
     // Mouse Events
     sliderItems.current.onmousedown = this.dragStart;
+
+    this.setState({ newSlideSize: slideSize });
+    window.addEventListener('resize', this.handleResize);
   }
 
   cloneNodes(firstSlide, lastSlide) {
@@ -68,6 +82,24 @@ class index extends Component {
 
     sliderItems.current.appendChild(cloneFirst);
     sliderItems.current.insertBefore(cloneLast, firstSlide);
+  }
+
+  handleResize() {
+    const width = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+
+    if (width >= 1024) return this.setState({ newSlideSize: LG });
+
+    if (width >= 768 && width < 1024)
+      return this.setState({ newSlideSize: MD });
+
+    if (width >= 424 && width <= 767)
+      return this.setState({ newSlideSize: SM });
+
+    if (width >= 320 && width <= 424)
+      return this.setState({ newSlideSize: XSM });
   }
 
   dragStart(e) {
@@ -230,6 +262,7 @@ class index extends Component {
         selectedIndex,
         goSlide,
         index,
+        newSlideSize,
       },
     } = this;
 
@@ -246,7 +279,21 @@ class index extends Component {
 
       this.setState({ goSlide: '' });
     }
+
+    if (newSlideSize !== slideSize) {
+      const newPostInital = -(newSlideSize * (index + 1));
+
+      sliderItems.current.style.left = newPostInital + 'px';
+      this.setState({ slideSize: newSlideSize, posInitial: newPostInital });
+    }
   }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', () =>
+      console.log('removed event listener for Single Slide')
+    );
+  }
+
   render() {
     const {
       dragStart,

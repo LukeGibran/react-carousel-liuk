@@ -1,0 +1,17 @@
+// Media Query Mixins
+@mixin mediaXSm {
+  @media only screen and (min-device-width: 320px) and (max-device-width: 424px) {
+    @content;
+  }
+}
+@mixin mediaSm {
+  @media screen and (max-width: 767px) {
+    @content;
+  }
+}
+
+@mixin mediaMd {
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    @content;
+  }
+}

@@ -1,0 +1,46 @@
+@include mediaSm {
+  .header {
+    h1 {
+      font-size: 28px;
+    }
+  }
+
+  section.carousel-options {
+    margin-bottom: 2rem;
+  }
+  #slider.slider {
+    .wrapper {
+      width: $slider-width-sm;
+      height: $slider-height-sm;
+      .inner-slides {
+        .slides {
+          left: -$slider-width-sm;
+          .slide {
+            min-width: $slider-width-sm;
+            height: $slider-height-sm;
+          }
+
+          .multipleSlide {
+            min-width: $slider-width-sm;
+            height: $slider-height-sm;
+            .multipleSlideItem {
+              min-width: 120px;
+            }
+          }
+        }
+      }
+    }
+    .control {
+      width: 35px;
+      height: 35px;
+
+      &.prev {
+        left: -15px;
+      }
+
+      &.next {
+        right: -15px;
+      }
+    }
+  }
+}

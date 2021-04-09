@@ -1,0 +1,46 @@
+@include mediaXSm {
+  .navbar {
+    .navbar-title {
+      font-size: 18px;
+    }
+  }
+  .header {
+    h1 {
+      font-size: 21px;
+    }
+  }
+
+  section.carousel-options {
+    .options {
+      flex-direction: column;
+      & > * {
+        margin: 0;
+        margin-bottom: 5px;
+      }
+    }
+  }
+  #slider.slider {
+    .wrapper {
+      width: $slider-width-xsm;
+      height: $slider-height-xsm;
+      .inner-slides {
+        .slides {
+          left: -$slider-width-xsm;
+          .slide {
+            min-width: $slider-width-xsm;
+            height: $slider-height-xsm;
+          }
+
+          .multipleSlide {
+            min-width: $slider-width-xsm;
+            height: $slider-height-xsm;
+
+            .multipleSlideItem {
+              min-width: 80px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

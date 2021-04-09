@@ -58,7 +58,7 @@ export class CarouselComponent extends Component {
               initialValue={multiple}
             />
             <CheckBox
-              text='Slider Buttons'
+              text='Go To Buttons'
               isChecked={isSliderButtons}
               initialValue={sliderButtons}
             />
