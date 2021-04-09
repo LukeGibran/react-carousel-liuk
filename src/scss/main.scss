@@ -45,3 +45,6 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: darken($secondary, 10);
 }
+
+// Media Queries
+@import './MediaQueries/all';

@@ -1,0 +1,25 @@
+@include mediaMd {
+  #slider.slider {
+    .wrapper {
+      width: $slider-width-m;
+      height: $slider-height-m;
+      .inner-slides {
+        .slides {
+          left: -$slider-width-m;
+          .slide {
+            min-width: $slider-width-m;
+            height: $slider-height-m;
+          }
+
+          .multipleSlide {
+            min-width: $slider-width-m;
+            height: $slider-height-m;
+            .multipleSlideItem {
+              width: 180px;
+            }
+          }
+        }
+      }
+    }
+  }
+}

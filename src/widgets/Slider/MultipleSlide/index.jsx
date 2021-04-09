@@ -3,7 +3,16 @@ import React, { Component } from 'react';
 import MultipleSlide from './MultipleSlide';
 import SelectBtn from '../SelectBtn';
 
-import { SLIDE_DATA, NEXT, PREV, GO_SLIDE } from '../../../_data/data';
+import {
+  SLIDE_DATA,
+  NEXT,
+  PREV,
+  GO_SLIDE,
+  LG,
+  MD,
+  SM,
+  XSM,
+} from '../../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -19,6 +28,9 @@ class index extends Component {
     this.shiftSlide = this.shiftSlide.bind(this);
     this.checkIndex = this.checkIndex.bind(this);
     this.selectSlide = this.selectSlide.bind(this);
+    this.displaySlides = this.displaySlides.bind(this);
+    this.handleResize = this.handleResize.bind(this);
+    this.removeCloneNodes = this.removeCloneNodes.bind(this);
 
     this.state = {
       posX1: 0,
@@ -31,22 +43,27 @@ class index extends Component {
       selectedIndex: 0,
       goSlide: '',
       dragging: false,
+      currentWidthResize: 0,
     };
   }
 
   initialize() {
-    const { slider, sliderItems, dragStart, dragEnd, dragMove } = this;
+    const {
+      slider,
+      sliderItems,
+      dragStart,
+      dragEnd,
+      dragMove,
+      handleResize,
+    } = this;
     let slides = sliderItems.current.children,
       slidesLength = slides.length,
-      slideSize = sliderItems.current.children[0].offsetWidth,
-      firstSlide = slides[0],
-      lastSlide = slides[slidesLength - 1];
+      slideSize = sliderItems.current.children[0].offsetWidth;
 
     this.setState({ slidesLength, slideSize });
 
     // Clone the first slide and last and attached them in the opposite direction
-    this.cloneNodes(firstSlide, lastSlide);
-
+    this.cloneNodes();
     // Add the loaded class to determine if the slides have been rendered
     slider.current.classList.add('loaded');
 
@@ -59,15 +76,72 @@ class index extends Component {
     this.setState({ posInitial: sliderItems.current.offsetLeft });
     // Mouse Events
     sliderItems.current.onmousedown = this.dragStart;
+
+    this.setState({ newSlideSize: slideSize });
+    window.addEventListener('resize', handleResize);
+  }
+  handleResize() {
+    const width = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+
+    if (width >= 1024)
+      return this.setState({
+        newSlideSize: LG,
+        index: 0,
+        currentWidthResize: width,
+      });
+
+    if (width >= 768 && width < 1024)
+      return this.setState({
+        newSlideSize: MD,
+        index: 0,
+        currentWidthResize: width,
+      });
+
+    if (width >= 424 && width <= 767) {
+      this.removeCloneNodes();
+      return this.setState({
+        newSlideSize: SM,
+        index: 0,
+        currentWidthResize: width,
+      });
+    }
+
+    if (width >= 320 && width <= 424) {
+      if (this.state.currentWidthResize > 424) {
+        this.removeCloneNodes();
+      }
+      return this.setState({
+        newSlideSize: XSM,
+        index: 0,
+        currentWidthResize: width,
+      });
+    }
   }
 
-  cloneNodes(firstSlide, lastSlide) {
+  cloneNodes() {
     const { sliderItems } = this;
-    let cloneFirst = firstSlide.cloneNode(true),
+    let slides = sliderItems.current.children,
+      slidesLength = slides.length,
+      firstSlide = slides[0],
+      lastSlide = slides[slidesLength - 1],
+      cloneFirst = firstSlide.cloneNode(true),
       cloneLast = lastSlide.cloneNode(true);
 
     sliderItems.current.appendChild(cloneFirst);
     sliderItems.current.insertBefore(cloneLast, firstSlide);
+  }
+
+  removeCloneNodes() {
+    const { sliderItems } = this;
+    let slides = sliderItems.current,
+      first = slides.firstChild,
+      last = slides.lastChild;
+
+    slides.removeChild(first);
+    slides.removeChild(last);
   }
 
   dragStart(e) {
@@ -230,6 +304,7 @@ class index extends Component {
         selectedIndex,
         goSlide,
         index,
+        newSlideSize,
       },
     } = this;
 
@@ -246,17 +321,48 @@ class index extends Component {
 
       this.setState({ goSlide: '' });
     }
+
+    if (newSlideSize !== slideSize) {
+      const width = Math.max(
+        document.documentElement.clientWidth || 0,
+        window.innerWidth || 0
+      );
+
+      if (width < 767) {
+        this.cloneNodes();
+      }
+      const newPostInital = -(newSlideSize * (index + 1));
+      const slidesLength = sliderItems.current.children.length - 2;
+
+      sliderItems.current.style.left = newPostInital + 'px';
+      this.setState({
+        slideSize: newSlideSize,
+        posInitial: newPostInital,
+        slidesLength,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', () =>
+      console.log('removed event listener for Multiple Slide')
+    );
   }
 
   displaySlides(dragStart, dragEnd, dragMove, contentValue) {
-    const numberOfSlides = Math.ceil(SLIDE_DATA.length / 3);
-    let from;
-    let to;
-    let items = [];
+    const width = Math.max(
+      document.documentElement.clientWidth || 0,
+      window.innerWidth || 0
+    );
+    let from,
+      to,
+      itemSize = width >= 768 ? 3 : width >= 424 ? 2 : 1,
+      items = [];
+    const numberOfSlides = Math.ceil(SLIDE_DATA.length / itemSize);
 
     for (let x = 1; x <= numberOfSlides; x++) {
-      to = 3 * x;
-      from = to - 3;
+      to = itemSize * x;
+      from = to - itemSize;
       items.push(
         <MultipleSlide
           onMouseDown={dragStart}
