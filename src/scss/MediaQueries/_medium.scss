@@ -6,15 +6,17 @@
       .inner-slides {
         .slides {
           left: -$slider-width-m;
-          .slide {
-            min-width: $slider-width-m;
-            height: $slider-height-m;
+          .singleSlide {
+            .slide {
+              min-width: $slider-width-m;
+              height: $slider-height-m;
+            }
           }
 
           .multipleSlide {
             min-width: $slider-width-m;
             height: $slider-height-m;
-            .multipleSlideItem {
+            .slide {
               width: 180px;
             }
           }

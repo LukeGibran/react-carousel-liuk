@@ -4,16 +4,7 @@ import PropTypes from 'prop-types';
 import Slide from './Slide';
 import SelectBtn from '../SelectBtn';
 
-import {
-  SLIDE_DATA,
-  NEXT,
-  PREV,
-  GO_SLIDE,
-  LG,
-  MD,
-  SM,
-  XSM,
-} from '../../../_data/data';
+import { NEXT, PREV, GO_SLIDE, LG, MD, SM, XSM } from '../../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -314,7 +305,7 @@ class index extends Component {
       checkIndex,
       selectSlide,
       state: { index, slidesLength },
-      props: { infinite, sliderButtons, contentValue },
+      props: { infinite, sliderButtons, content },
     } = this;
     return (
       <div id='slider' className='slider' ref={this.slider}>
@@ -326,14 +317,13 @@ class index extends Component {
               ref={this.sliderItems}
               onTransitionEnd={checkIndex}
             >
-              {SLIDE_DATA.map((data, i) => (
+              {content.map((data, i) => (
                 <Slide
                   onMouseDown={dragStart}
                   onMouseUp={dragEnd}
                   onMouseMove={dragMove}
                   key={i}
-                  contentValue={contentValue}
-                  {...data}
+                  data={data}
                 />
               ))}
             </div>
@@ -370,7 +360,6 @@ class index extends Component {
 }
 
 index.propTypes = {
-  contentValue: PropTypes.string.isRequired,
   infinite: PropTypes.bool.isRequired,
   sliderButtons: PropTypes.bool.isRequired,
 };
