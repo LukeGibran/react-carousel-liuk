@@ -4,16 +4,7 @@ import PropTypes from 'prop-types';
 import MultipleSlide from './MultipleSlide';
 import SelectBtn from '../SelectBtn';
 
-import {
-  SLIDE_DATA,
-  NEXT,
-  PREV,
-  GO_SLIDE,
-  LG,
-  MD,
-  SM,
-  XSM,
-} from '../../../_data/data';
+import { NEXT, PREV, GO_SLIDE, LG, MD, SM, XSM } from '../../../_data/data';
 
 class index extends Component {
   constructor() {
@@ -360,6 +351,7 @@ class index extends Component {
   }
 
   displaySlides(dragStart, dragEnd, dragMove, contentValue) {
+    const { content } = this.props;
     const width = Math.max(
       document.documentElement.clientWidth || 0,
       window.innerWidth || 0
@@ -368,7 +360,7 @@ class index extends Component {
       to,
       itemSize = width >= 768 ? 3 : width >= 424 ? 2 : 1,
       items = [];
-    const numberOfSlides = Math.ceil(SLIDE_DATA.length / itemSize);
+    const numberOfSlides = Math.ceil(content.length / itemSize);
 
     for (let x = 1; x <= numberOfSlides; x++) {
       to = itemSize * x;
@@ -380,7 +372,7 @@ class index extends Component {
           onMouseMove={dragMove}
           key={x}
           contentValue={contentValue}
-          data={SLIDE_DATA.slice(from, to)}
+          data={content.slice(from, to)}
         />
       );
     }
@@ -396,7 +388,7 @@ class index extends Component {
       checkIndex,
       selectSlide,
       state: { index, slidesLength },
-      props: { infinite, sliderButtons, contentValue, multiple },
+      props: { infinite, sliderButtons, multiple },
     } = this;
     return (
       <div id='slider' className='slider' ref={this.slider}>
@@ -408,7 +400,7 @@ class index extends Component {
               ref={this.sliderItems}
               onTransitionEnd={checkIndex}
             >
-              {this.displaySlides(dragStart, dragEnd, dragMove, contentValue)}
+              {this.displaySlides(dragStart, dragEnd, dragMove)}
             </div>
           </div>
           {index === 0 && !infinite ? null : (
@@ -444,7 +436,6 @@ class index extends Component {
 }
 
 index.propTypes = {
-  contentValue: PropTypes.string.isRequired,
   infinite: PropTypes.bool.isRequired,
   sliderButtons: PropTypes.bool,
 };

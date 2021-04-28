@@ -26,16 +26,18 @@
       .inner-slides {
         .slides {
           left: -$slider-width-xsm;
-          .slide {
-            min-width: $slider-width-xsm;
-            height: $slider-height-xsm;
+          .singleSlide {
+            .slide {
+              min-width: $slider-width-xsm;
+              height: $slider-height-xsm;
+            }
           }
 
           .multipleSlide {
             min-width: $slider-width-xsm;
             height: $slider-height-xsm;
 
-            .multipleSlideItem {
+            .slide {
               min-width: 80px;
             }
           }

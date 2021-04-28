@@ -19,7 +19,7 @@ const MultipleSlide = ({ contentValue, data }) => {
 
   return (
     <div className='multipleSlide'>
-      {data.map(({ title, content, image }, i) => (
+      {/* {data.map(({ title, content, image }, i) => (
         <div
           className='multipleSlideItem'
           key={i}
@@ -51,7 +51,8 @@ const MultipleSlide = ({ contentValue, data }) => {
             }
           ></span>
         </div>
-      ))}
+      ))} */}
+      {data}
     </div>
   );
 };

@@ -16,31 +16,48 @@
         top: 0;
         left: -$slider-width;
         width: auto;
-        .slide {
-          min-width: $slider-width;
-          height: $slider-height;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-around;
-          align-items: center;
-          transition: all 1s;
-          position: relative;
-          background: $primary;
-          color: $secondary;
-          border-radius: 2px;
+        .singleSlide {
+          .slide {
+            min-width: $slider-width;
+            height: $slider-height;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: all 1s;
+            position: relative;
+            background: $primary;
+            color: $secondary;
+            border-radius: 2px;
 
-          .title,
-          .content {
-            z-index: 10;
+            img.image {
+              height: 100%;
+              width: 100%;
+            }
+            .title,
+            .content {
+              z-index: 10;
+              position: absolute;
+              content: '';
+              right: 50%;
+              transform: translateX(50%);
+            }
+
+            .title {
+              top: 20%;
+            }
+            .content {
+              top: 70%;
+            }
           }
         }
-
         .multipleSlide {
           min-width: $slider-width;
           height: $slider-height;
           display: flex;
-          .multipleSlideItem {
+          .slide {
             width: 250px;
+            max-width: 250px;
             margin: 3rem 1rem;
             background-color: $primary;
             display: flex;
@@ -49,10 +66,27 @@
             align-items: center;
             color: $secondary;
             position: relative;
+            img.image {
+              height: 100%;
+              max-width: 100%;
+              object-fit: cover;
+            }
 
             .title,
             .content {
               z-index: 10;
+              position: absolute;
+              content: '';
+              right: 50%;
+              transform: translateX(50%);
+              z-index: 10;
+              text-align: center;
+            }
+            .title {
+              top: 20%;
+            }
+            .content {
+              top: 70%;
             }
           }
         }
@@ -131,11 +165,6 @@
   }
   &.loaded {
     .slides {
-      .slide:nth-child(odd) {
-        background-color: $tertiary;
-        color: $primary;
-      }
-
       .multipleSlide .multipleSlideItem:nth-child(even) {
         background-color: $tertiary;
         color: $primary;
